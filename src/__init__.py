@@ -1,14 +1,16 @@
 """
-Your custom task implementation.
+Gravity Physics Task Generator.
 
-Files to customize:
+Generates vertical motion scenarios with gravity effects using pymunk physics engine.
+
+Main components:
     - config.py   : Task-specific configuration (TaskConfig)
-    - generator.py: Task generation logic (TaskGenerator)
-    - prompts.py  : Task prompts/instructions (get_prompt)
+    - generator.py: Gravity physics generation logic (GravityPhysicsGenerator)
+    - prompts.py  : Dynamic prompt generation with physics parameters (get_prompt)
 """
 
 from .config import TaskConfig
-from .generator import TaskGenerator
+from .generator import GravityPhysicsGenerator, TaskGenerator
 from .prompts import get_prompt
 
-__all__ = ["TaskConfig", "TaskGenerator", "get_prompt"]
+__all__ = ["TaskConfig", "GravityPhysicsGenerator", "TaskGenerator", "get_prompt"]

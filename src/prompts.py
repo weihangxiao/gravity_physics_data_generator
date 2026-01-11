@@ -1,57 +1,60 @@
 """
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                           YOUR TASK PROMPTS                                   ║
+║                          GRAVITY PHYSICS PROMPTS                              ║
 ║                                                                               ║
-║  CUSTOMIZE THIS FILE to define prompts/instructions for your task.            ║
-║  Prompts are selected based on task type and returned to the model.           ║
+║  Prompts for gravity effects physics reasoning tasks.                         ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 """
 
 import random
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  DEFINE YOUR PROMPTS
-# ══════════════════════════════════════════════════════════════════════════════
-
-PROMPTS = {
-    "default": [
-        "Animate the chess pieces to show white delivering checkmate in one move. The winning piece should move smoothly to its destination square, capturing if necessary, resulting in the opponent's king being in checkmate.",
-        "Show white making the winning move that checkmates black. The piece should move clearly from its starting position to deliver mate, with smooth animation.",
-        "Demonstrate white's checkmate in one. Move the attacking piece to its final square, showing the decisive blow that ends the game.",
-    ],
-    
-    "back_rank": [
-        "Show the rook or queen delivering a back-rank checkmate. The attacking piece should slide horizontally along the back rank to trap the enemy king.",
-        "Animate a classic back-rank mate. The attacking piece moves along the eighth rank to checkmate the trapped king behind its own pawns.",
-    ],
-    
-    "queen_mate": [
-        "Show the queen delivering checkmate. The queen should move decisively to its final square, supported by the king, to trap the opponent's king.",
-        "Animate the queen administering checkmate. She should glide to her destination, working with the friendly king to corner the enemy monarch.",
-    ],
-    
-    "rook_mate": [
-        "Show the rook delivering checkmate. The rook should move cleanly along its file or rank to trap the enemy king.",
-        "Animate the rook administering mate. It should slide smoothly to its destination square, cutting off the king's escape.",
-    ],
-}
-
-
-def get_prompt(task_type: str = "default") -> str:
+def get_prompt(height: float, initial_velocity: float, gravity: float) -> str:
     """
-    Select a random prompt for the given task type.
-    
+    Generate a prompt for gravity physics task.
+
     Args:
-        task_type: Type of task (key in PROMPTS dict)
-        
+        height: Initial height in meters
+        initial_velocity: Initial velocity in m/s (positive=upward, negative=downward)
+        gravity: Gravity acceleration in m/s²
+
     Returns:
-        Random prompt string from the specified type
+        Formatted prompt string with specific parameters
     """
-    prompts = PROMPTS.get(task_type, PROMPTS["default"])
-    return random.choice(prompts)
+    # Determine velocity description
+    if initial_velocity > 0.5:
+        velocity_desc = f"initial upward velocity {initial_velocity:.1f} m/s"
+    elif initial_velocity < -0.5:
+        velocity_desc = f"initial downward velocity {abs(initial_velocity):.1f} m/s"
+    else:
+        velocity_desc = "dropped from rest (velocity = 0)"
+
+    # Determine gravity environment description
+    if 9.5 <= gravity <= 10.0:
+        gravity_env = f"Earth-like gravity ({gravity:.1f} m/s²)"
+    elif 1.0 <= gravity <= 2.0:
+        gravity_env = f"Moon-like gravity ({gravity:.1f} m/s²)"
+    elif 3.0 <= gravity <= 4.5:
+        gravity_env = f"Mars-like gravity ({gravity:.1f} m/s²)"
+    elif gravity > 12.0:
+        gravity_env = f"heavy planet gravity ({gravity:.1f} m/s²)"
+    else:
+        gravity_env = f"gravity {gravity:.1f} m/s²"
+
+    # Choose a random template
+    templates = [
+        f"Ball at height {height:.1f}m with {velocity_desc} experiences {gravity_env}. Predict the motion under gravity.",
+
+        f"Initial conditions: height = {height:.1f}m, {velocity_desc}, gravity = {gravity:.1f} m/s². Show the trajectory and final position.",
+
+        f"Object starts at {height:.1f}m height with {velocity_desc}. Gravity acceleration is {gravity:.1f} m/s². Animate the motion following physics.",
+
+        f"Under {gravity_env}, a ball at {height:.1f}m with {velocity_desc} begins motion. Predict and show the complete trajectory.",
+    ]
+
+    return random.choice(templates)
 
 
-def get_all_prompts(task_type: str = "default") -> list[str]:
-    """Get all prompts for a given task type."""
-    return PROMPTS.get(task_type, PROMPTS["default"])
+def get_simple_prompt() -> str:
+    """Get a simple generic prompt (for fallback)."""
+    return "Predict the motion of an object under gravity following physics rules."
